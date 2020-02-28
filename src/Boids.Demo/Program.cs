@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Boids.Simulation.Archetypes;
+using Boids.Simulation.Systems;
 
 namespace Boids.Demo
 {
@@ -20,16 +21,27 @@ namespace Boids.Demo
             window.Closed += OnClose;
 
             var boids = EvenlySpacedBoids(windowSize, numberOfBoids).ToList();
+            var followLeaderSystem = new FollowTheLeader(0.2f);
+
+            var clock = new Clock();
+            var previousFrameTime = clock.ElapsedTime;
 
             while (window.IsOpen)
             {
+                var deltaTime = (Time.FromSeconds(1) / previousFrameTime).AsSeconds();
                 window.DispatchEvents();
                 window.Clear();
+
+                boids.ForEach(boid => followLeaderSystem.Mutate(boid, deltaTime));
+                boids.ForEach(boid => boid.BoidComponent.Position += boid.BoidComponent.Acceleration);
+
+                boids.ForEach(boid => UpdateBoidRender.Mutate(boid.DrawableBoidComponent, boid.BoidComponent));
                 foreach (var boid in boids)
                 {
                     window.Draw(boid.DrawableBoidComponent);
                 }
                 window.Display();
+                previousFrameTime = clock.Restart();
             }
         }
 
@@ -38,7 +50,7 @@ namespace Boids.Demo
             var xSpacing = windowSize.X / numberOfBoids;
             var ySpacing = windowSize.Y / numberOfBoids;
 
-            for (var i = 0; i <= numberOfBoids; i++)
+            for (var i = 0; i < numberOfBoids; i++)
             {
                 var position = new Vector2f(xSpacing * i, ySpacing * i);
                 yield return new Boid
