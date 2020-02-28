@@ -22,6 +22,7 @@ namespace Boids.Demo
 
             var boids = EvenlySpacedBoids(windowSize, numberOfBoids).ToList();
             var followLeaderSystem = new FollowTheLeader(0.2f);
+            var windSystem = new Wind(new Vector2f(1, 0), 0.1f);
 
             var clock = new Clock();
             var previousFrameTime = clock.ElapsedTime;
@@ -33,6 +34,7 @@ namespace Boids.Demo
                 window.Clear();
 
                 boids.ForEach(boid => followLeaderSystem.Mutate(boid, deltaTime));
+                boids.ForEach(boid => windSystem.Mutate(boid, deltaTime));
                 boids.ForEach(boid => boid.BoidComponent.Position += boid.BoidComponent.Acceleration);
 
                 boids.ForEach(boid => UpdateBoidRender.Mutate(boid.DrawableBoidComponent, boid.BoidComponent));
