@@ -1,4 +1,5 @@
-﻿using SFML.Graphics;
+﻿using System;
+using SFML.Graphics;
 using SFML.System;
 
 namespace Boids.Simulation.Components
@@ -9,7 +10,11 @@ namespace Boids.Simulation.Components
 
         public DrawableBoidComponent()
         {
-            _shape = new RectangleShape(new Vector2f(10, 10));
+            var random = new Random((int)DateTime.UtcNow.Ticks);
+            _shape = new RectangleShape(new Vector2f(2, 2))
+            {
+                FillColor = new Color((byte)random.Next(), (byte)random.Next(), (byte)random.Next())
+            };
         }
 
         public void Draw(RenderTarget target, RenderStates states)
