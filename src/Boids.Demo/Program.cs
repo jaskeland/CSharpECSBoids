@@ -5,6 +5,7 @@ using SFML.Window;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Boids.Simulation.Archetypes;
 
 namespace Boids.Demo
 {
@@ -18,22 +19,15 @@ namespace Boids.Demo
             var window = new RenderWindow(new VideoMode(windowSize.X, windowSize.Y), "Boids");
             window.Closed += OnClose;
 
-            var boids = EvenlySpacedBoids(windowSize, numberOfBoids);
-            var drawableBoids = new List<DrawableBoid>();
-            drawableBoids.AddRange(boids.Select(b => new DrawableBoid(b.Position)));
+            var boids = EvenlySpacedBoids(windowSize, numberOfBoids).ToList();
 
             while (window.IsOpen)
             {
                 window.DispatchEvents();
-
-                foreach (var (boid, index) in boids.Select((v, i) => (v, i)))
-                {
-                }
-
                 window.Clear();
-                foreach (var drawable in drawableBoids)
+                foreach (var boid in boids)
                 {
-                    window.Draw(drawable);
+                    window.Draw(boid.DrawableBoidComponent);
                 }
                 window.Display();
             }
@@ -44,13 +38,21 @@ namespace Boids.Demo
             var xSpacing = windowSize.X / numberOfBoids;
             var ySpacing = windowSize.Y / numberOfBoids;
 
-            for (int i = 0; i <= numberOfBoids; i++)
+            for (var i = 0; i <= numberOfBoids; i++)
             {
+                var position = new Vector2f(xSpacing * i, ySpacing * i);
                 yield return new Boid
                 {
-                    Acceleration = new Vector2f(),
-                    Position = new Vector2f(xSpacing * i, ySpacing * i),
-                    Target = new Vector2f(windowSize.X / 2, windowSize.Y / 2)
+                    BoidComponent = new BoidComponent
+                    {
+                        Acceleration = new Vector2f(),
+                        Position = position,
+                        Target = new Vector2f(windowSize.X / 2, windowSize.Y / 2)
+                    },
+                    DrawableBoidComponent = new DrawableBoidComponent
+                    {
+                        Position = position
+                    }
                 };
             }
         }

@@ -3,14 +3,13 @@ using SFML.System;
 
 namespace Boids.Simulation.Components
 {
-    public class DrawableBoid : Transformable, Drawable
+    public class DrawableBoidComponent : Transformable, Drawable
     {
-        private RectangleShape _shape;
+        private readonly RectangleShape _shape;
 
-        public DrawableBoid(Vector2f position)
+        public DrawableBoidComponent()
         {
             _shape = new RectangleShape(new Vector2f(10, 10));
-            Position = position;
         }
 
         public void Draw(RenderTarget target, RenderStates states)

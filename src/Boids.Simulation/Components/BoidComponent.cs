@@ -2,7 +2,7 @@
 
 namespace Boids.Simulation.Components
 {
-    public class Boid
+    public class BoidComponent
     {
         public Vector2f Position { get; set; }
 
