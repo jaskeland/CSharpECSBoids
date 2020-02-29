@@ -3,12 +3,12 @@ using Boids.Simulation.Helpers;
 
 namespace Boids.Simulation.Systems
 {
-    public class MaintainDistanceFromOtherBoids
+    public class StayAwayFromNearestBoid
     {
         private readonly float _minDistance;
         private readonly float _influence;
 
-        public MaintainDistanceFromOtherBoids(float minDistance, float influence)
+        public StayAwayFromNearestBoid(float minDistance, float influence)
         {
             _minDistance = minDistance;
             _influence = influence;

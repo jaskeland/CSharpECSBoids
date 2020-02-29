@@ -23,8 +23,8 @@ namespace Boids.Demo
             var boids = EvenlySpacedBoids(windowSize, numberOfBoids).ToList();
             var followLeaderSystem = new FollowTheLeader(0.2f);
             var windSystem = new Wind(new Vector2f(1, 0), 0.1f);
-            var maxSpeedSystem = new LimitSpeed(1.0f);
-            var maintainDistanceSystem = new MaintainDistanceFromOtherBoids(25.0f, 1.0f);
+            var maxSpeedSystem = new LimitSpeed(5.0f);
+            var maintainDistanceSystem = new StayAwayFromNearestBoid(10.0f, 1.0f);
             var frictionSystem = new Friction(0.1f);
 
             var clock = new Clock();
@@ -37,8 +37,9 @@ namespace Boids.Demo
                 window.Clear();
 
                 boids.ForEach(boid => boid.BoidComponent.NearestNeighbour = FindNeareastNeighbour.NearestNeighbour(boid, boids.Select(b => b.BoidComponent.Position)));
+                boids.ForEach(boid => boid.BoidComponent.Target = AverageFlockCenter.Center(boids.Select(b => b.BoidComponent.Position)));
                 boids.ForEach(boid => followLeaderSystem.Mutate(boid, deltaTime));
-                boids.ForEach(boid => windSystem.Mutate(boid, deltaTime));
+                //boids.ForEach(boid => windSystem.Mutate(boid, deltaTime));
                 boids.ForEach(boid => maxSpeedSystem.Mutate(boid));
                 boids.ForEach(boid => maintainDistanceSystem.Mutate(boid, deltaTime));
                 boids.ForEach(boid => frictionSystem.Mutate(boid, deltaTime));

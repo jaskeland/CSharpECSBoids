@@ -21,7 +21,7 @@ namespace Boids.Simulation.Facts
                 }
             };
 
-            var sut = new MaintainDistanceFromOtherBoids(10.0f, 1.0f);
+            var sut = new StayAwayFromNearestBoid(10.0f, 1.0f);
 
             sut.Mutate(boid, 1.0f);
 
