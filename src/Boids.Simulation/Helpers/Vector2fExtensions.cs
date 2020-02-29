@@ -14,5 +14,10 @@ namespace Boids.Simulation.Helpers
         {
             return vector / vector.Length();
         }
+
+        public static float DistanceTo(this Vector2f vector, Vector2f target)
+        {
+            return (vector - target).Length();
+        }
     }
 }

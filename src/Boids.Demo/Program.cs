@@ -14,8 +14,8 @@ namespace Boids.Demo
     {
         private static void Main(string[] args)
         {
-            var windowSize = new Vector2u(800, 600);
-            uint numberOfBoids = 200;
+            var windowSize = new Vector2u(1920, 1080);
+            uint numberOfBoids = 100;
 
             var window = new RenderWindow(new VideoMode(windowSize.X, windowSize.Y), "Boids");
             window.Closed += OnClose;
@@ -23,7 +23,9 @@ namespace Boids.Demo
             var boids = EvenlySpacedBoids(windowSize, numberOfBoids).ToList();
             var followLeaderSystem = new FollowTheLeader(0.2f);
             var windSystem = new Wind(new Vector2f(1, 0), 0.1f);
-            var maxSpeedSystem = new LimitSpeed(5.0f);
+            var maxSpeedSystem = new LimitSpeed(1.0f);
+            var maintainDistanceSystem = new MaintainDistanceFromOtherBoids(25.0f, 1.0f);
+            var frictionSystem = new Friction(0.1f);
 
             var clock = new Clock();
             var previousFrameTime = clock.ElapsedTime;
@@ -34,10 +36,13 @@ namespace Boids.Demo
                 window.DispatchEvents();
                 window.Clear();
 
+                boids.ForEach(boid => boid.BoidComponent.NearestNeighbour = FindNeareastNeighbour.NearestNeighbour(boid, boids.Select(b => b.BoidComponent.Position)));
                 boids.ForEach(boid => followLeaderSystem.Mutate(boid, deltaTime));
                 boids.ForEach(boid => windSystem.Mutate(boid, deltaTime));
-
                 boids.ForEach(boid => maxSpeedSystem.Mutate(boid));
+                boids.ForEach(boid => maintainDistanceSystem.Mutate(boid, deltaTime));
+                boids.ForEach(boid => frictionSystem.Mutate(boid, deltaTime));
+
                 boids.ForEach(boid => boid.BoidComponent.Position += boid.BoidComponent.Acceleration);
 
                 boids.ForEach(boid => UpdateBoidRender.Mutate(boid.DrawableBoidComponent, boid.BoidComponent));

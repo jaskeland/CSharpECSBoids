@@ -1,19 +1,18 @@
 ﻿using System;
 using SFML.Graphics;
-using SFML.System;
 
 namespace Boids.Simulation.Components
 {
     public class DrawableBoidComponent : Transformable, Drawable
     {
-        private readonly RectangleShape _shape;
+        private readonly CircleShape _shape;
 
         public DrawableBoidComponent()
         {
             var random = new Random((int)DateTime.UtcNow.Ticks);
-            _shape = new RectangleShape(new Vector2f(2, 2))
+            _shape = new CircleShape(3.0f)
             {
-                FillColor = new Color((byte)random.Next(), (byte)random.Next(), (byte)random.Next())
+                FillColor = new Color((byte)random.Next(15, 255), (byte)random.Next(15, 255), (byte)random.Next(50, 255))
             };
         }
 

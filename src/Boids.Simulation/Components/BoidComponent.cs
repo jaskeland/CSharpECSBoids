@@ -9,5 +9,7 @@ namespace Boids.Simulation.Components
         public Vector2f Acceleration { get; set; }
 
         public Vector2f Target { get; set; }
+
+        public Vector2f NearestNeighbour { get; set; }
     }
 }
