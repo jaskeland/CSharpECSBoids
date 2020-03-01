@@ -24,10 +24,11 @@ namespace Boids.Demo
 
             var boids = EvenlySpacedBoids(windowSize, numberOfBoids).ToList();
             var followLeaderSystem = new FollowTheLeader(0.2f);
-            var windSystem = new Wind(new Vector2(1, 0), 0.1f);
+            var windSystem = new Wind(new Vector2(-1, -1), 0.1f);
             var maxSpeedSystem = new LimitSpeed(5.0f);
             var maintainDistanceSystem = new StayAwayFromNearestBoid(10.0f, 1.0f);
             var frictionSystem = new Friction(0.1f);
+            var insideBoundsSystem = new StayInsideBounds(new Vector2(0.0f), new Vector2(windowSize.X, windowSize.Y));
 
             var clock = new Clock();
             var previousFrameTime = clock.ElapsedTime;
@@ -41,10 +42,12 @@ namespace Boids.Demo
                 boids.ForEach(boid => boid.BoidComponent.NearestNeighbour = FindNeareastNeighbour.NearestNeighbour(boid, boids.Select(b => b.BoidComponent.Position)));
                 boids.ForEach(boid => boid.BoidComponent.Target = AverageFlockCenter.Center(boids.Select(b => b.BoidComponent.Position)));
                 boids.ForEach(boid => followLeaderSystem.Mutate(boid, deltaTime));
-                //boids.ForEach(boid => windSystem.Mutate(boid, deltaTime));
+                boids.ForEach(boid => windSystem.Mutate(boid, deltaTime));
                 boids.ForEach(boid => maxSpeedSystem.Mutate(boid));
                 boids.ForEach(boid => maintainDistanceSystem.Mutate(boid, deltaTime));
                 boids.ForEach(boid => frictionSystem.Mutate(boid, deltaTime));
+
+                boids.ForEach(boid => insideBoundsSystem.Mutate(boid));
 
                 boids.ForEach(boid => boid.BoidComponent.Position += boid.BoidComponent.Acceleration);
 
