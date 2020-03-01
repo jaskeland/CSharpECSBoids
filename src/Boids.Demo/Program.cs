@@ -6,7 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Boids.Simulation.Archetypes;
+using Boids.Simulation.Helpers;
 using Boids.Simulation.Systems;
+using System.Numerics;
 
 namespace Boids.Demo
 {
@@ -22,7 +24,7 @@ namespace Boids.Demo
 
             var boids = EvenlySpacedBoids(windowSize, numberOfBoids).ToList();
             var followLeaderSystem = new FollowTheLeader(0.2f);
-            var windSystem = new Wind(new Vector2f(1, 0), 0.1f);
+            var windSystem = new Wind(new Vector2(1, 0), 0.1f);
             var maxSpeedSystem = new LimitSpeed(5.0f);
             var maintainDistanceSystem = new StayAwayFromNearestBoid(10.0f, 1.0f);
             var frictionSystem = new Friction(0.1f);
@@ -63,18 +65,18 @@ namespace Boids.Demo
 
             for (var i = 0; i < numberOfBoids; i++)
             {
-                var position = new Vector2f(xSpacing * i, ySpacing * i);
+                var position = new Vector2(xSpacing * i, ySpacing * i);
                 yield return new Boid
                 {
                     BoidComponent = new BoidComponent
                     {
-                        Acceleration = new Vector2f(),
+                        Acceleration = new Vector2(),
                         Position = position,
-                        Target = new Vector2f(windowSize.X / 2, windowSize.Y / 2)
+                        Target = new Vector2(windowSize.X / 2, windowSize.Y / 2)
                     },
                     DrawableBoidComponent = new DrawableBoidComponent
                     {
-                        Position = position
+                        Position = position.ToVector2f()
                     }
                 };
             }

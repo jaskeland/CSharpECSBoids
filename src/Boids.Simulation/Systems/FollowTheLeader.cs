@@ -1,5 +1,5 @@
 ﻿using Boids.Simulation.Archetypes;
-using Boids.Simulation.Helpers;
+using System.Numerics;
 
 namespace Boids.Simulation.Systems
 {
@@ -14,7 +14,7 @@ namespace Boids.Simulation.Systems
 
         public void Mutate(Boid boid, float deltaTime)
         {
-            var direction = (boid.BoidComponent.Target - boid.BoidComponent.Position).Normalize();
+            var direction = Vector2.Normalize(boid.BoidComponent.Target - boid.BoidComponent.Position);
             var influence = direction * _influence * deltaTime;
             boid.BoidComponent.Acceleration += influence;
         }

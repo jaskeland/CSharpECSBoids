@@ -1,8 +1,7 @@
 ﻿using Boids.Simulation.Archetypes;
 using Boids.Simulation.Components;
-using Boids.Simulation.Helpers;
 using Boids.Simulation.Systems;
-using SFML.System;
+using System.Numerics;
 using Xunit;
 
 namespace Boids.Simulation.Facts
@@ -16,8 +15,8 @@ namespace Boids.Simulation.Facts
             {
                 BoidComponent = new BoidComponent
                 {
-                    Position = new Vector2f(10, 10),
-                    NearestNeighbour = new Vector2f(5, 5)
+                    Position = new Vector2(10, 10),
+                    NearestNeighbour = new Vector2(5, 5)
                 }
             };
 

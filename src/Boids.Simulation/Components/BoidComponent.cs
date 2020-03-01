@@ -1,15 +1,16 @@
 ﻿using SFML.System;
+using System.Numerics;
 
 namespace Boids.Simulation.Components
 {
     public class BoidComponent
     {
-        public Vector2f Position { get; set; }
+        public Vector2 Position { get; set; }
 
-        public Vector2f Acceleration { get; set; }
+        public Vector2 Acceleration { get; set; }
 
-        public Vector2f Target { get; set; }
+        public Vector2 Target { get; set; }
 
-        public Vector2f NearestNeighbour { get; set; }
+        public Vector2 NearestNeighbour { get; set; }
     }
 }

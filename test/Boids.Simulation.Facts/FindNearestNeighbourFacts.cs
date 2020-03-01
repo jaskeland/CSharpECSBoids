@@ -1,7 +1,7 @@
 ﻿using Boids.Simulation.Archetypes;
 using Boids.Simulation.Components;
 using Boids.Simulation.Systems;
-using SFML.System;
+using System.Numerics;
 using Xunit;
 
 namespace Boids.Simulation.Facts
@@ -15,13 +15,13 @@ namespace Boids.Simulation.Facts
             {
                 BoidComponent = new BoidComponent
                 {
-                    Position = new Vector2f(10, 10)
+                    Position = new Vector2(10, 10)
                 }
             };
             var neighbours = new[]
             {
-                new Vector2f(0,0),
-                new Vector2f(5,5)
+                new Vector2(0,0),
+                new Vector2(5,5)
             };
 
             var nearestNeighbour = FindNeareastNeighbour.NearestNeighbour(boid, neighbours);

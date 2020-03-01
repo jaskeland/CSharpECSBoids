@@ -1,4 +1,5 @@
 ﻿using Boids.Simulation.Components;
+using Boids.Simulation.Helpers;
 
 namespace Boids.Simulation.Systems
 {
@@ -6,7 +7,7 @@ namespace Boids.Simulation.Systems
     {
         public static void Mutate(DrawableBoidComponent drawable, BoidComponent boid)
         {
-            drawable.Position = boid.Position;
+            drawable.Position = boid.Position.ToVector2f();
         }
     }
 }

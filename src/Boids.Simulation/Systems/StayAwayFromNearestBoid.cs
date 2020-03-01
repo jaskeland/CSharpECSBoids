@@ -1,5 +1,5 @@
 ﻿using Boids.Simulation.Archetypes;
-using Boids.Simulation.Helpers;
+using System.Numerics;
 
 namespace Boids.Simulation.Systems
 {
@@ -16,10 +16,10 @@ namespace Boids.Simulation.Systems
 
         public void Mutate(Boid boid, float deltaTime)
         {
-            if (boid.BoidComponent.Position.DistanceTo(boid.BoidComponent.NearestNeighbour) > _minDistance)
+            if (Vector2.Distance(boid.BoidComponent.Position, boid.BoidComponent.NearestNeighbour) > _minDistance)
                 return;
 
-            var direction = (boid.BoidComponent.Position - boid.BoidComponent.NearestNeighbour).Normalize();
+            var direction = Vector2.Normalize(boid.BoidComponent.Position - boid.BoidComponent.NearestNeighbour);
             var influence = direction * _influence * deltaTime;
             boid.BoidComponent.Acceleration += influence;
         }

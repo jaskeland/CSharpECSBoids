@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Numerics;
 using Boids.Simulation.Archetypes;
-using SFML.System;
 
 namespace Boids.Simulation.Systems
 {
@@ -15,7 +15,7 @@ namespace Boids.Simulation.Systems
 
         public void Mutate(Boid boid)
         {
-            var clampedSpeed = new Vector2f
+            var clampedSpeed = new Vector2
             {
                 X = Math.Clamp(boid.BoidComponent.Acceleration.X, -_maxSpeed, _maxSpeed),
                 Y = Math.Clamp(boid.BoidComponent.Acceleration.Y, -_maxSpeed, _maxSpeed)

@@ -1,7 +1,4 @@
 ﻿using Boids.Simulation.Archetypes;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Boids.Simulation.Systems
 {

@@ -1,17 +1,16 @@
 ﻿using Boids.Simulation.Archetypes;
-using Boids.Simulation.Helpers;
-using SFML.System;
+using System.Numerics;
 
 namespace Boids.Simulation.Systems
 {
     public class Wind
     {
-        private readonly Vector2f _direction;
+        private readonly Vector2 _direction;
         private readonly float _influence;
 
-        public Wind(Vector2f direction, float influence)
+        public Wind(Vector2 direction, float influence)
         {
-            _direction = direction.Normalize();
+            _direction = Vector2.Normalize(direction);
             _influence = influence;
         }
 
