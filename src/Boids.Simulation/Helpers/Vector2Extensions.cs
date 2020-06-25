@@ -9,5 +9,19 @@ namespace Boids.Simulation.Helpers
         {
             return new Vector2f(vector.X, vector.Y);
         }
+
+        public static bool IsLeftOf(this Vector2 thisPoint, Vector2 otherPoint, uint dimension)
+        {
+            return dimension == 0
+                ? thisPoint.X < otherPoint.X
+                : thisPoint.Y < otherPoint.Y;
+        }
+
+        public static float ValueAtDimension(this Vector2 point, uint dimension)
+        {
+            return dimension == 0
+                ? point.X
+                : point.Y;
+        }
     }
 }

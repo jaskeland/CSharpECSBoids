@@ -20,6 +20,9 @@ namespace Boids.Simulation.Systems
                 return;
 
             var direction = Vector2.Normalize(boid.BoidComponent.Position - boid.BoidComponent.NearestNeighbour);
+            if (float.IsNaN(direction.X) || float.IsNaN(direction.Y))
+                return;
+
             var influence = direction * _influence * deltaTime;
             boid.BoidComponent.Acceleration += influence;
         }

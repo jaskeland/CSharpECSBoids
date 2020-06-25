@@ -1,4 +1,7 @@
 ﻿using Boids.Simulation.Components;
+using System;
+using System.Collections.Generic;
+using System.Numerics;
 
 namespace Boids.Simulation.Archetypes
 {
@@ -16,5 +19,10 @@ namespace Boids.Simulation.Archetypes
         public BoidComponent BoidComponent { get; set; }
 
         public DrawableBoidComponent DrawableBoidComponent { get; set; }
+
+        public static IEnumerable<Vector2> Select()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
