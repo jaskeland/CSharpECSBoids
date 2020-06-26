@@ -1,18 +1,22 @@
 ﻿using System;
 using SFML.Graphics;
+using SFML.System;
 
 namespace Boids.Simulation.Components
 {
     public class DrawableBoidComponent : Transformable, Drawable
     {
-        private readonly CircleShape _shape;
+        private readonly Drawable _shape;
 
         public DrawableBoidComponent()
         {
             var random = new Random((int)DateTime.UtcNow.Ticks);
-            _shape = new CircleShape(3.0f)
+            var colour = new Color((byte) random.Next(15, 255), (byte) random.Next(15, 255), (byte) random.Next(50, 255));
+            _shape = new VertexArray(PrimitiveType.LineStrip, 4)
             {
-                FillColor = new Color((byte)random.Next(15, 255), (byte)random.Next(15, 255), (byte)random.Next(50, 255))
+                [0] = new Vertex(new Vector2f(-9, -6), colour),
+                [1] = new Vertex(new Vector2f(0, 0), colour),
+                [2] = new Vertex(new Vector2f(-9, 6), colour)
             };
         }
 

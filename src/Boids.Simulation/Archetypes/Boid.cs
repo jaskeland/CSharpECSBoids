@@ -19,10 +19,5 @@ namespace Boids.Simulation.Archetypes
         public BoidComponent BoidComponent { get; set; }
 
         public DrawableBoidComponent DrawableBoidComponent { get; set; }
-
-        public static IEnumerable<Vector2> Select()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
