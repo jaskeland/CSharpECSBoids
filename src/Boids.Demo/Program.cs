@@ -42,6 +42,7 @@ namespace Boids.Demo
             };
 
             var boids = EvenlySpacedBoids(windowSize, numberOfBoids).ToList();
+            //var boids = RandomplyPlacedBoids(windowSize, numberOfBoids).ToList();
             var followLeaderSystem = new FollowTheLeader(0.2f);
             var windSystem = new Wind(new Vector2(-1, -1), 0.1f);
             var maxSpeedSystem = new LimitSpeed(5.0f);
@@ -49,6 +50,7 @@ namespace Boids.Demo
             var frictionSystem = new Friction(0.1f);
             var insideBoundsSystem = new StayInsideBounds(new Vector2(0.0f), new Vector2(windowSize.X, windowSize.Y));
             //var quadTree = new Quadtree(boids.Select(b => b.BoidComponent.Position), new Vector2(0, 0), new Vector2(windowSize.X, windowSize.Y));
+            var kdTree = new KdTree(boids.Select(b => b.BoidComponent.Position));
 
             var clock = new Clock();
             var previousFrameTime = clock.ElapsedTime;
@@ -63,7 +65,8 @@ namespace Boids.Demo
 
                 if (running)
                 {
-                    boids.ForEach(boid => boid.BoidComponent.NearestNeighbour = FindNeareastNeighbour.NearestNeighbour(boid, boids.Select(b => b.BoidComponent.Position)));
+                    kdTree = new KdTree(boids.Select(b => b.BoidComponent.Position));
+                    boids.ForEach(boid => boid.BoidComponent.NearestNeighbour = kdTree.NearestNeighbour(boid.BoidComponent.Position));
                     boids.ForEach(boid => boid.BoidComponent.Target = AverageFlockCenter.Center(boids.Select(b => b.BoidComponent.Position)));
                     boids.ForEach(boid => followLeaderSystem.Mutate(boid, deltaTime));
                     boids.ForEach(boid => windSystem.Mutate(boid, deltaTime));
@@ -98,6 +101,28 @@ namespace Boids.Demo
             for (var i = 0; i < numberOfBoids; i++)
             {
                 var position = new Vector2(xSpacing * i, ySpacing * i);
+                yield return new Boid
+                {
+                    BoidComponent = new BoidComponent
+                    {
+                        Acceleration = new Vector2(),
+                        Position = position,
+                        Target = new Vector2(windowSize.X / 2, windowSize.Y / 2)
+                    },
+                    DrawableBoidComponent = new DrawableBoidComponent
+                    {
+                        Position = position.ToVector2f()
+                    }
+                };
+            }
+        }
+
+        private static IEnumerable<Boid> RandomplyPlacedBoids(Vector2u windowSize, uint numberOfBoids)
+        {
+            var random = new Random((int)DateTime.Now.Ticks);
+            for (var i = 0; i < numberOfBoids; i++)
+            {
+                var position = new Vector2(random.Next((int)windowSize.X), random.Next((int)windowSize.Y));
                 yield return new Boid
                 {
                     BoidComponent = new BoidComponent

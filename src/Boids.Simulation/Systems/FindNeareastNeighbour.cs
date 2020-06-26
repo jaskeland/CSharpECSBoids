@@ -9,8 +9,6 @@ namespace Boids.Simulation.Systems
     {
         public static Vector2 NearestNeighbour(Boid boid, IEnumerable<Vector2> neighbours)
         {
-            //var tree = new KdTree(neighbours);
-            //return tree.NearestNeighbour(boid.BoidComponent.Position);
             var closestPoint = boid.BoidComponent.Target;
             var closestDistance = Vector2.Distance(boid.BoidComponent.Position, closestPoint);
 

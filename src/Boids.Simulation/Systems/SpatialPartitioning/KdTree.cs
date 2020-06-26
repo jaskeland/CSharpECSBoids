@@ -36,7 +36,7 @@ namespace Boids.Simulation.Systems.SpatialPartitioning
             return NearestNeighbourByQueue(_root, point);
         }
 
-        private Node InsertRecursive(Node? root, Vector2 point, uint depth)
+        private static Node InsertRecursive(Node? root, Vector2 point, uint depth)
         {
             if (root == null)
                 return new Node(point, depth);
@@ -51,7 +51,7 @@ namespace Boids.Simulation.Systems.SpatialPartitioning
             return root;
         }
 
-        private float MinimumValueInDimension(Node? root, uint dimension, uint depth)
+        private static float MinimumValueInDimension(Node? root, uint dimension, uint depth)
         {
             if (root == null)
                 return float.MaxValue;
@@ -69,7 +69,7 @@ namespace Boids.Simulation.Systems.SpatialPartitioning
             return MinOfThree(root.Point.ValueAtDimension(dimension), MinimumValueInDimension(root.Left, dimension, depth + 1), MinimumValueInDimension(root.Right, dimension, depth + 1));
         }
 
-        private Vector2 NearestNeighbourByQueue(Node root, Vector2 point)
+        private static Vector2 NearestNeighbourByQueue(Node root, Vector2 point)
         {
             var nodesToExplore = new Queue<Node>();
             nodesToExplore.Enqueue(root);
@@ -117,7 +117,7 @@ namespace Boids.Simulation.Systems.SpatialPartitioning
             return bestPoint;
         }
 
-        private float MinOfThree(float v1, float v2, float v3)
+        private static float MinOfThree(float v1, float v2, float v3)
         {
             return Math.Min(v1, Math.Min(v2, v3));
         }
