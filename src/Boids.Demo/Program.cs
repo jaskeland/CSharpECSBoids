@@ -10,6 +10,7 @@ using Boids.Simulation.Helpers;
 using Boids.Simulation.Systems;
 using System.Numerics;
 using Boids.Simulation.Systems.SpatialPartitioning;
+using Boids.Simulation.Systems.SpatialPartitioning.KdTree;
 
 namespace Boids.Demo
 {
@@ -63,7 +64,7 @@ namespace Boids.Demo
 
                 if (running)
                 {
-                    var kdTree = new KdTree(boids.Select(b => b.BoidComponent.Position));
+                    var kdTree = new Vector2KdTree(boids.Select(b => b.BoidComponent.Position));
                     boids.ForEach(boid => boid.BoidComponent.NearestNeighbour = kdTree.NearestNeighbour(boid.BoidComponent.Position));
                     boids.ForEach(boid => boid.BoidComponent.Target = AverageFlockCenter.Center(kdTree, boid.BoidComponent.Position, 150.0f));
                     boids.ForEach(boid => followLeaderSystem.Mutate(boid, deltaTime));

@@ -1,16 +1,16 @@
-﻿using Boids.Simulation.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Boids.Simulation.Helpers;
 
-namespace Boids.Simulation.Systems.SpatialPartitioning
+namespace Boids.Simulation.Systems.SpatialPartitioning.KdTree
 {
-    public class KdTree
+    public class Vector2KdTree
     {
-        private Node? _root;
+        private Vector2KdTreeNode? _root;
 
-        public KdTree(IEnumerable<Vector2> points)
+        public Vector2KdTree(IEnumerable<Vector2> points)
         {
             foreach (var point in points)
             {
@@ -44,10 +44,10 @@ namespace Boids.Simulation.Systems.SpatialPartitioning
             return NeighboursWithinRangeByQueue(_root, point, range);
         }
 
-        private static Node InsertRecursive(Node? root, Vector2 point, uint depth)
+        private static Vector2KdTreeNode InsertRecursive(Vector2KdTreeNode? root, Vector2 point, uint depth)
         {
             if (root == null)
-                return new Node(point, depth);
+                return new Vector2KdTreeNode(point, depth);
 
             if (point.IsNan())
                 return root;
@@ -63,7 +63,7 @@ namespace Boids.Simulation.Systems.SpatialPartitioning
             return root;
         }
 
-        private static float MinimumValueInDimension(Node? root, uint dimension, uint depth)
+        private static float MinimumValueInDimension(Vector2KdTreeNode? root, uint dimension, uint depth)
         {
             if (root == null)
                 return float.MaxValue;
@@ -81,9 +81,9 @@ namespace Boids.Simulation.Systems.SpatialPartitioning
             return MinOfThree(root.Point.ValueAtDimension(dimension), MinimumValueInDimension(root.Left, dimension, depth + 1), MinimumValueInDimension(root.Right, dimension, depth + 1));
         }
 
-        private static Vector2 NearestNeighbourByQueue(Node root, Vector2 point)
+        private static Vector2 NearestNeighbourByQueue(Vector2KdTreeNode root, Vector2 point)
         {
-            var nodesToExplore = new Queue<Node>();
+            var nodesToExplore = new Queue<Vector2KdTreeNode>();
             nodesToExplore.Enqueue(root);
 
             var bestPoint = root.Point;
@@ -129,9 +129,9 @@ namespace Boids.Simulation.Systems.SpatialPartitioning
             return bestPoint;
         }
 
-        private static IEnumerable<Vector2> NeighboursWithinRangeByQueue(Node root, Vector2 point, float range)
+        private static IEnumerable<Vector2> NeighboursWithinRangeByQueue(Vector2KdTreeNode root, Vector2 point, float range)
         {
-            var nodesToExplore = new Queue<Node>();
+            var nodesToExplore = new Queue<Vector2KdTreeNode>();
             nodesToExplore.Enqueue(root);
 
             var nearbyNeighbours = new List<Vector2>();

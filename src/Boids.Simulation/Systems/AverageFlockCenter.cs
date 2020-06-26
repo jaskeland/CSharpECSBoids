@@ -5,12 +5,13 @@ using System.Numerics;
 using Boids.Simulation.Archetypes;
 using Boids.Simulation.Helpers;
 using Boids.Simulation.Systems.SpatialPartitioning;
+using Boids.Simulation.Systems.SpatialPartitioning.KdTree;
 
 namespace Boids.Simulation.Systems
 {
     public static class AverageFlockCenter
     {
-        public static Vector2 Center(KdTree tree, Vector2 position, float range)
+        public static Vector2 Center(Vector2KdTree tree, Vector2 position, float range)
         {
             var flock = tree.NeighboursInRange(position, range).ToList();
 
