@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
-namespace Boids.Simulation.Systems.Quadtree
+namespace Boids.Simulation.Systems.SpatialPartitioning.Quadtree
 {
     public class QuadtreeBucket
     {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
 using Xunit;
-using Boids.Simulation.Systems.Quadtree;
 using System;
+using Boids.Simulation.Systems.SpatialPartitioning.Quadtree;
 
 namespace Boids.Simulation.Facts.QuadtreeFacts
 {

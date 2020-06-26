@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Numerics;
 
-namespace Boids.Simulation.Systems.Quadtree
+namespace Boids.Simulation.Systems.SpatialPartitioning.Quadtree
 {
     internal class PartitionedQuadtreeBucketPoints
     {

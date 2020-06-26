@@ -1,4 +1,4 @@
-﻿namespace Boids.Simulation.Systems.Quadtree
+﻿namespace Boids.Simulation.Systems.SpatialPartitioning.Quadtree
 {
     internal enum ChildBucketDirection
     {

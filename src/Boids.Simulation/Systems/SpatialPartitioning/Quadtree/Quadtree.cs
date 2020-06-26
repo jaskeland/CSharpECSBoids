@@ -1,12 +1,11 @@
-﻿using Boids.Simulation.Helpers;
+﻿using System;
+using System.Collections.Generic;
+using System.Numerics;
+using Boids.Simulation.Helpers;
 using Boids.Simulation.SFML_helpers;
 using SFML.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
 
-namespace Boids.Simulation.Systems.Quadtree
+namespace Boids.Simulation.Systems.SpatialPartitioning.Quadtree
 {
     /// <summary>
     /// Partitoned space from top-left to bottom-right.
