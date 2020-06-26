@@ -23,5 +23,10 @@ namespace Boids.Simulation.Helpers
                 ? point.X
                 : point.Y;
         }
+
+        public static bool IsNan(this Vector2 vector)
+        {
+            return float.IsNaN(vector.X) || float.IsNaN(vector.Y);
+        }
     }
 }

@@ -36,10 +36,22 @@ namespace Boids.Simulation.Systems.SpatialPartitioning
             return NearestNeighbourByQueue(_root, point);
         }
 
+        public IEnumerable<Vector2> NeighboursInRange(Vector2 point, float range)
+        {
+            if (_root == null || float.IsNaN(range))
+                return new Vector2[] { };
+
+            return NeighboursWithinRangeByQueue(_root, point, range);
+        }
+
         private static Node InsertRecursive(Node? root, Vector2 point, uint depth)
         {
             if (root == null)
                 return new Node(point, depth);
+
+            if (point.IsNan())
+                return root;
+
 
             var currentDimension = depth % 2;
 
@@ -115,6 +127,52 @@ namespace Boids.Simulation.Systems.SpatialPartitioning
             }
 
             return bestPoint;
+        }
+
+        private static IEnumerable<Vector2> NeighboursWithinRangeByQueue(Node root, Vector2 point, float range)
+        {
+            var nodesToExplore = new Queue<Node>();
+            nodesToExplore.Enqueue(root);
+
+            var nearbyNeighbours = new List<Vector2>();
+
+            uint depth = 0;
+
+            while (nodesToExplore.Any())
+            {
+                var node = nodesToExplore.Dequeue();
+
+                if (point.IsLeftOf(node.Point, node.Dimension))
+                {
+                    if (node.Left != null)
+                    {
+                        var distanceToChild = Vector2.Distance(point, node.Left.Point);
+                        if (distanceToChild < range)
+                        {
+                            nearbyNeighbours.Add(node.Left.Point);
+                        }
+                        nodesToExplore.Enqueue(node.Left);
+                    }
+                }
+                else
+                {
+                    if (node.Right != null)
+                    {
+                        var distanceToChild = Vector2.Distance(point, node.Right.Point);
+                        if (distanceToChild < range)
+                        {
+                            nearbyNeighbours.Add(node.Right.Point);
+                        }
+                        nodesToExplore.Enqueue(node.Right);
+                    }
+                }
+
+                depth++;
+                if (depth == uint.MaxValue)
+                    throw new Exception();
+            }
+
+            return nearbyNeighbours;
         }
 
         private static float MinOfThree(float v1, float v2, float v3)

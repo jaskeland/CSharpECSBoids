@@ -5,7 +5,7 @@ namespace Boids.Simulation.SFML_helpers
 {
     public class ListOfDrawables : Drawable
     {
-        private List<Drawable> _drawables;
+        private readonly List<Drawable> _drawables;
 
         public ListOfDrawables()
         {

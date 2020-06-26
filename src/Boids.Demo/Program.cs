@@ -19,8 +19,8 @@ namespace Boids.Demo
         private static void Main(string[] args)
         {
             var windowSize = new Vector2u(1920, 1080);
-            uint numberOfBoids = 100;
-            var timeScale = 0.1f;
+            uint numberOfBoids = 200;
+            var timeScale = 1f;
 
             var window = new RenderWindow(new VideoMode(windowSize.X, windowSize.Y), "Boids");
             var running = true;
@@ -41,16 +41,15 @@ namespace Boids.Demo
                 }
             };
 
-            var boids = EvenlySpacedBoids(windowSize, numberOfBoids).ToList();
-            //var boids = RandomplyPlacedBoids(windowSize, numberOfBoids).ToList();
-            var followLeaderSystem = new FollowTheLeader(0.2f);
+            //var boids = EvenlySpacedBoids(windowSize, numberOfBoids).ToList();
+            var boids = RandomplyPlacedBoids(windowSize, numberOfBoids).ToList();
+            var followLeaderSystem = new FollowTheLeader(15.0f);
             var windSystem = new Wind(new Vector2(-1, -1), 0.1f);
-            var maxSpeedSystem = new LimitSpeed(5.0f);
-            var maintainDistanceSystem = new StayAwayFromNearestBoid(10.0f, 1.0f);
+            var maxSpeedSystem = new LimitSpeed(0.5f);
+            var maintainDistanceSystem = new StayAwayFromNearestBoid(10.0f, 20.0f);
             var frictionSystem = new Friction(0.1f);
             var insideBoundsSystem = new StayInsideBounds(new Vector2(0.0f), new Vector2(windowSize.X, windowSize.Y));
             //var quadTree = new Quadtree(boids.Select(b => b.BoidComponent.Position), new Vector2(0, 0), new Vector2(windowSize.X, windowSize.Y));
-            var kdTree = new KdTree(boids.Select(b => b.BoidComponent.Position));
 
             var clock = new Clock();
             var previousFrameTime = clock.ElapsedTime;
@@ -65,15 +64,15 @@ namespace Boids.Demo
 
                 if (running)
                 {
-                    kdTree = new KdTree(boids.Select(b => b.BoidComponent.Position));
+                    var kdTree = new KdTree(boids.Select(b => b.BoidComponent.Position));
                     boids.ForEach(boid => boid.BoidComponent.NearestNeighbour = kdTree.NearestNeighbour(boid.BoidComponent.Position));
-                    boids.ForEach(boid => boid.BoidComponent.Target = AverageFlockCenter.Center(boids.Select(b => b.BoidComponent.Position)));
+                    boids.ForEach(boid => boid.BoidComponent.Target = AverageFlockCenter.Center(kdTree, boid.BoidComponent.Position, 80.0f));
                     boids.ForEach(boid => followLeaderSystem.Mutate(boid, deltaTime));
                     boids.ForEach(boid => windSystem.Mutate(boid, deltaTime));
-                    boids.ForEach(boid => maxSpeedSystem.Mutate(boid));
                     boids.ForEach(boid => maintainDistanceSystem.Mutate(boid, deltaTime));
                     boids.ForEach(boid => frictionSystem.Mutate(boid, deltaTime));
 
+                    boids.ForEach(boid => maxSpeedSystem.Mutate(boid));
                     boids.ForEach(boid => insideBoundsSystem.Mutate(boid));
 
                     boids.ForEach(boid => boid.BoidComponent.Position += boid.BoidComponent.Acceleration);
