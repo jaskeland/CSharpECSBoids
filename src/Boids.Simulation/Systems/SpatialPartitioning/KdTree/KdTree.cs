@@ -27,10 +27,10 @@ namespace Boids.Simulation.Systems.SpatialPartitioning.KdTree
 
         private static KdTreeNode<TType> InsertRecursive(KdTreeNode<TType>? root, TType point, uint depth, uint dimensionality)
         {
-            if (root == null)
-                return new KdTreeNode<TType>(point, depth);
-
             var currentDimension = depth % dimensionality;
+
+            if (root == null)
+                return new KdTreeNode<TType>(point, currentDimension);
 
             if (point.IsLeftOf(root.Value, currentDimension))
                 root.Left = InsertRecursive(root.Left, point, depth + 1, dimensionality);
@@ -48,46 +48,40 @@ namespace Boids.Simulation.Systems.SpatialPartitioning.KdTree
         public TType NearestNeighbour(TType value)
         {
             // _root is always initialized in the constructor
-            return NearestNeighbourByQueue(_root!, value);
+            return NearestNeighbour(_root!, value);
         }
 
-        private static TType NearestNeighbourByQueue(KdTreeNode<TType> root, TType point)
+        private static TType NearestNeighbour(KdTreeNode<TType> root, TType point)
         {
-            var nodesToExplore = new Queue<KdTreeNode<TType>>();
-            nodesToExplore.Enqueue(root);
+            var nodesToExplore = new Stack<KdTreeNode<TType>>();
+            nodesToExplore.Push(root);
 
             var bestSoFar = root.Value;
-            var bestDistance = point.Distance(root.Value);
+            var bestDistance = float.MaxValue;
             uint depth = 0;
 
             while (nodesToExplore.Any())
             {
-                var node = nodesToExplore.Dequeue();
+                var node = nodesToExplore.Pop();
+                var distance = point.Distance(node.Value);
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    bestSoFar = node.Value;
+                }
 
                 if (point.IsLeftOf(node.Value, node.Dimension))
                 {
                     if (node.Left != null)
                     {
-                        var distanceToChild = point.Distance(node.Left.Value);
-                        if (distanceToChild < bestDistance)
-                        {
-                            bestDistance = distanceToChild;
-                            bestSoFar = node.Left.Value;
-                        }
-                        nodesToExplore.Enqueue(node.Left);
+                        nodesToExplore.Push(node.Left);
                     }
                 }
                 else
                 {
                     if (node.Right != null)
                     {
-                        var distanceToChild = point.Distance(node.Right.Value);
-                        if (distanceToChild < bestDistance)
-                        {
-                            bestDistance = distanceToChild;
-                            bestSoFar = node.Right.Value;
-                        }
-                        nodesToExplore.Enqueue(node.Right);
+                        nodesToExplore.Push(node.Right);
                     }
                 }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Boids.Simulation.Systems.SpatialPartitioning.KdTree;
 using Xunit;
@@ -21,40 +22,81 @@ namespace Boids.Simulation.Facts
             var tree = new KdTree<KdVector2>(points, 2);
         }
 
-        [Fact]
-        public void Nearest_neighbour_returns_correct_value_for_2d_vectors()
+        [Theory]
+        [InlineData(10)]
+        [InlineData(100)]
+        [InlineData(1000)]
+        [InlineData(10000)]
+        public void Nearest_neighbour_returns_correct_value_for_2d_vectors(int numPoints)
         {
-            var points = new List<KdVector2>
-            {
-                { new KdVector2(10, 10) },
-                { new KdVector2(25,10) },
-                { new KdVector2(75,10) },
-                { new KdVector2(25,75) },
-            };
+            var rand = new Random();
+            int randInt() => rand.Next(0, 1000);
+            KdVector2 randVector2() => new KdVector2(randInt(), randInt());
+            var points = Enumerable.Range(0, numPoints).Select(_ => randVector2()).ToList();
+
             var tree = new KdTree<KdVector2>(points, 2);
 
-            var searchPoint = new KdVector2(15, 15);
+            var searchPoint = new KdVector2(250, 750);
             var neigbhour = tree.NearestNeighbour(searchPoint);
+            var bruteForcedNeighbour = points.OrderBy(vec => vec.Distance(searchPoint)).First();
 
-            Assert.Equal(neigbhour.Value, points[0].Value);
+            Assert.Equal(bruteForcedNeighbour.Value, neigbhour.Value);
+        }
+
+        [Theory]
+        [InlineData(10)]
+        [InlineData(100)]
+        [InlineData(1000)]
+        [InlineData(10000)]
+        public void Nearest_neighbour_returns_correct_value_for_3d_vectors(int numPoints)
+        {
+            var rand = new Random();
+            int randInt() => rand.Next(0, 1000);
+            KdVector3 randVector2() => new KdVector3(randInt(), randInt(), randInt());
+            var points = Enumerable.Range(0, numPoints).Select(_ => randVector2()).ToList();
+
+            var tree = new KdTree<KdVector3>(points, 3);
+
+            var searchPoint = new KdVector3(250, 750, 0);
+            var neigbhour = tree.NearestNeighbour(searchPoint);
+            var bruteForcedNeighbour = points.OrderBy(vec => vec.Distance(searchPoint)).First();
+
+            Assert.Equal(bruteForcedNeighbour.Value, neigbhour.Value);
         }
 
         [Fact]
-        public void Nearest_neighbour_returns_correct_value_for_3d_vectors()
+        public void Forced_to_explore_both_children_of_root()
         {
-            var points = new List<KdVector3>
+            // Drawing these out illustrates a diffcult case where we cannot simply discard half of the tree
+            var vectors = new[]
             {
-                { new KdVector3(10, 10, 10) },
-                { new KdVector3(25,10, 25) },
-                { new KdVector3(75,10, 75) },
-                { new KdVector3(25,75, 25) },
+                new Vector2(51, 75),
+                new Vector2(25, 40),
+                new Vector2(70, 70),
+                new Vector2(10, 30),
+                new Vector2(35, 90),
+                new Vector2(55, 1),
+                new Vector2(60, 80),
+                new Vector2(1, 10),
+                new Vector2(50, 50),
             };
-            var tree = new KdTree<KdVector3>(points, 3);
 
-            var searchPoint = new KdVector3(15, 15, 15);
-            var neigbhour = tree.NearestNeighbour(searchPoint);
+            // The space is first split on x = 51, and x = 52 is right of that. But the nearest neighbour has x = 50 and lies in the left subtree.
+            var target = new Vector2(52, 52);
+            // 50, 2 is also a difficult spot. These points force us to explore in both the left and right side of the root
+            var otherTarget = new Vector2(50, 2);
 
-            Assert.Equal(neigbhour.Value, points[0].Value);
+            var points = vectors.Select(v => new KdVector2(v.X, v.Y));
+            var tree = new KdTree<KdVector2>(points, 2);
+
+            var nearest = tree.NearestNeighbour(new KdVector2(target.X, target.Y));
+            var bruteForcedNeighbour = vectors.OrderBy(v => Vector2.Distance(v, target)).First();
+
+            var nearest2 = tree.NearestNeighbour(new KdVector2(otherTarget.X, otherTarget.Y));
+            var bruteForcedNeighbour2 = vectors.OrderBy(v => Vector2.Distance(v, otherTarget)).First();
+
+            Assert.Equal(bruteForcedNeighbour, nearest.Value);
+            Assert.Equal(bruteForcedNeighbour2, nearest2.Value);
         }
 
         private class KdVector2 : IKdTreeSortable<KdVector2>
@@ -93,9 +135,9 @@ namespace Boids.Simulation.Facts
                 return dimension switch
                 {
                     0 => Value.X < other.Value.X,
-                    1 => Value.X < other.Value.X,
-                    2 => Value.X < other.Value.X,
-                    _ => throw new Exception("This is a 3d vector, no fourth dimensions allowed.")
+                    1 => Value.Y < other.Value.Y,
+                    2 => Value.Z < other.Value.Z,
+                    _ => throw new Exception($"This is a 3d vector, no fourth dimensions allowed.")
                 };
             }
 

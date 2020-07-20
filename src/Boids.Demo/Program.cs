@@ -19,7 +19,7 @@ namespace Boids.Demo
         private static void Main(string[] args)
         {
             var windowSize = new Vector2u(1920, 1080);
-            uint numberOfBoids = 200;
+            uint numberOfBoids = 500;
             var timeScale = 1f;
 
             var window = new RenderWindow(new VideoMode(windowSize.X, windowSize.Y), "Boids");
