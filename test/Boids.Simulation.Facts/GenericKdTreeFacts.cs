@@ -99,6 +99,78 @@ namespace Boids.Simulation.Facts
             Assert.Equal(bruteForcedNeighbour2, nearest2.Value);
         }
 
+        [Fact]
+        public void Gets_correct_size()
+        {
+            var points = new List<KdVector2>
+            {
+                { new KdVector2(10, 10) },
+                { new KdVector2(25,10) },
+                { new KdVector2(75,10) },
+                { new KdVector2(25,75) },
+            };
+            var tree = new KdTree<KdVector2>(points, 2);
+
+            var size = tree.Size();
+            
+            Assert.Equal(1, size.X);
+            Assert.Equal(3, size.Y);
+        }
+
+        [Fact]
+        public void Gets_correct_size_for_wide_tree()
+        {
+            var vectors = new[]
+            {
+                new Vector2(51, 75),
+                new Vector2(25, 40),
+                new Vector2(70, 70),
+                new Vector2(10, 30),
+                new Vector2(35, 90),
+                new Vector2(55, 1),
+                new Vector2(60, 80),
+                new Vector2(1, 10),
+                new Vector2(50, 50),
+            };
+
+            var points = vectors.Select(v => new KdVector2(v.X, v.Y));
+            var tree = new KdTree<KdVector2>(points, 2);
+
+            var size = tree.Size();
+
+            Assert.Equal(4, size.X);
+            Assert.Equal(3, size.Y);
+        }
+
+        [Fact]
+        public void Gets_with_tree_position()
+        {
+            var vectors = new[]
+            {
+                new Vector2(51, 75),
+                new Vector2(25, 40),
+                new Vector2(70, 70),
+                new Vector2(10, 30),
+                new Vector2(35, 90),
+                new Vector2(55, 1),
+                new Vector2(60, 80),
+                new Vector2(1, 10),
+                new Vector2(50, 50),
+            };
+
+            var points = vectors.Select(v => new KdVector2(v.X, v.Y)).ToList();
+            var tree = new KdTree<KdVector2>(points, 2);
+
+            var elementsWithTreePosition = tree.GetAllWithPositionInTree();
+
+            Assert.NotEmpty(elementsWithTreePosition);
+            Assert.Equal(Vector2.Zero, elementsWithTreePosition[points[0]]);
+
+            var positionOfSixthElement = elementsWithTreePosition[points[5]];
+            Assert.Equal(2, positionOfSixthElement.X);
+            Assert.Equal(2, positionOfSixthElement.Y);
+        }
+
         private class KdVector2 : IKdTreeSortable<KdVector2>
         {
             public Vector2 Value { get; }
