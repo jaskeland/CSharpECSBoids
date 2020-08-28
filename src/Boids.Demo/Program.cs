@@ -9,7 +9,6 @@ using Boids.Simulation.Archetypes;
 using Boids.Simulation.Helpers;
 using Boids.Simulation.Systems;
 using System.Numerics;
-using Boids.Simulation.Systems.SpatialPartitioning;
 using Boids.Simulation.Systems.SpatialPartitioning.KdTree;
 
 namespace Boids.Demo
